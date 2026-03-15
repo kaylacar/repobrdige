@@ -272,7 +272,10 @@ function Invoke-RepobrdigeApiRequest {
         throw "Field 'url' is required."
       }
 
-      $track = Ensure-TrackedRepo -Root $Root -Id $payload.id -UpstreamUrl $payload.url -DefaultBranch $payload.branch -Focus $payload.focus
+      $payloadId = if ($payload.PSObject.Properties.Name -contains "id") { $payload.id } else { $null }
+      $payloadBranch = if ($payload.PSObject.Properties.Name -contains "branch") { $payload.branch } else { $null }
+      $payloadFocus = if ($payload.PSObject.Properties.Name -contains "focus") { $payload.focus } else { $null }
+      $track = Ensure-TrackedRepo -Root $Root -Id $payloadId -UpstreamUrl $payload.url -DefaultBranch $payloadBranch -Focus $payloadFocus
       return $track
     }
 

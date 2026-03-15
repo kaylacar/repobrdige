@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>repobrdige</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4efe4;
+      --panel: rgba(255, 251, 245, 0.92);
+      --ink: #1e2b24;
+      --muted: #627067;
+      --line: rgba(30, 43, 36, 0.12);
+      --accent: #0a7d52;
+      --accent-strong: #0d5e43;
+      --warn: #a65a28;
+      --shadow: 0 18px 50px rgba(30, 43, 36, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(10, 125, 82, 0.16), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(166, 90, 40, 0.12), transparent 28%),
+        linear-gradient(180deg, #f8f2e8, var(--bg));
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      padding: 28px 22px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.38);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      margin-bottom: 28px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .brand p,
+    .meta-line,
+    .empty,
+    .small {
+      color: var(--muted);
+    }
+
+    .repo-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .repo-card,
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+    }
+
+    .repo-card {
+      width: 100%;
+      text-align: left;
+      padding: 16px;
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .repo-card:hover,
+    .repo-card.active {
+      transform: translateY(-1px);
+      border-color: rgba(10, 125, 82, 0.45);
+      background: rgba(245, 255, 249, 0.95);
+    }
+
+    .repo-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(10, 125, 82, 0.1);
+      color: var(--accent-strong);
+    }
+
+    .pill.degraded {
+      background: rgba(166, 90, 40, 0.12);
+      color: var(--warn);
+    }
+
+    .content {
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 16px;
+    }
+
+    .hero h2 {
+      margin: 0 0 6px;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button.action {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 10px 25px rgba(10, 125, 82, 0.2);
+    }
+
+    button.action.secondary {
+      background: rgba(30, 43, 36, 0.08);
+      color: var(--ink);
+      box-shadow: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel h3 {
+      margin: 0 0 14px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-value,
+    code {
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .stat-value {
+      margin-top: 6px;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+
+    .draft-title {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .watch-list,
+    .detail-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .watch-row,
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .banner {
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: rgba(10, 125, 82, 0.08);
+      color: var(--accent-strong);
+      font-size: 0.92rem;
+    }
+
+    .banner.error {
+      background: rgba(166, 90, 40, 0.12);
+      color: var(--warn);
+    }
+
+    @media (max-width: 980px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>repo<br>bridge</h1>
+        <p>Current public repo tracking, current draft state, one sync away.</p>
+      </div>
+      <div class="meta-line" id="repoCount">Loading repos...</div>
+      <form id="trackForm" class="panel" style="padding:16px; margin: 14px 0 18px;">
+        <h3 style="margin-top:0;">Track Repo</h3>
+        <div style="display:grid; gap:10px;">
+          <input id="trackUrl" type="url" placeholder="https://github.com/owner/repo.git" style="width:100%; border:1px solid var(--line); border-radius:14px; padding:12px; font:inherit; background:white;">
+          <input id="trackId" type="text" placeholder="optional id" style="width:100%; border:1px solid var(--line); border-radius:14px; padding:12px; font:inherit; background:white;">
+          <input id="trackFocus" type="text" placeholder="optional focus" style="width:100%; border:1px solid var(--line); border-radius:14px; padding:12px; font:inherit; background:white;">
+          <button class="action" type="submit">Track New Repo</button>
+        </div>
+      </form>
+      <div class="repo-list" id="repoList"></div>
+    </aside>
+    <main class="content">
+      <section class="hero">
+        <div>
+          <h2 id="heroTitle">Loading</h2>
+          <p id="heroSubtitle">Connecting the app shell to the repobrdige backend.</p>
+        </div>
+        <div class="actions">
+          <button class="action" id="syncButton">Sync Selected Repo</button>
+          <button class="action secondary" id="refreshButton">Refresh View</button>
+        </div>
+      </section>
+      <div id="banner" class="banner" hidden></div>
+      <section class="grid">
+        <div class="panel">
+          <h3>Repo State</h3>
+          <div class="stat-grid" id="repoStats"></div>
+        </div>
+        <div class="panel">
+          <h3>Latest Draft</h3>
+          <div id="draftPanel" class="empty">No draft available.</div>
+        </div>
+        <div class="panel">
+          <h3>Watch Status</h3>
+          <div id="watchPanel" class="empty">No watch run recorded yet.</div>
+        </div>
+        <div class="panel">
+          <h3>What This Proves</h3>
+          <div class="detail-list">
+            <div class="detail-row"><span class="small">Backend usability</span><strong>App consumes live repo summaries</strong></div>
+            <div class="detail-row"><span class="small">Action path</span><strong>Sync button drives the same API the future app would call</strong></div>
+            <div class="detail-row"><span class="small">Current target</span><strong id="currentTarget">Waiting for repo selection</strong></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
